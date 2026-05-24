@@ -10,6 +10,11 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"country", "code"})
+        }
+)
 public class CouponEntity {
     @Id
     @GeneratedValue
@@ -18,13 +23,16 @@ public class CouponEntity {
     @Version
     private int version;
 
-    @Column(unique = true, updatable = false)
+    @Column(updatable = false)
     private String code;
+
+    //TODO
+    @Column(updatable = false)
+    private String country;
 
     @Column(updatable = false)
     private LocalDate creationDate;
 
-    private int maxUses;
-    private int currentUses;
-    private String country;
+    private int maxUsages;
+    private int usageCount;
 }

@@ -9,8 +9,8 @@ public class CouponMapper {
         CouponEntity couponEntity = new CouponEntity();
         couponEntity.setCode(coupon.getCode());
         couponEntity.setCreationDate(coupon.getCreationDate());
-        couponEntity.setMaxUses(coupon.getMaxUses());
-        couponEntity.setCurrentUses(coupon.getCurrentUses());
+        couponEntity.setMaxUsages(coupon.getMaxUsages());
+        couponEntity.setUsageCount(coupon.getUsageCount());
         couponEntity.setCountry(coupon.getCountry());
         return couponEntity;
     }
@@ -19,9 +19,13 @@ public class CouponMapper {
         Coupon coupon = new Coupon();
         coupon.setCode(couponEntity.getCode());
         coupon.setCreationDate(couponEntity.getCreationDate());
-        coupon.setMaxUses(couponEntity.getMaxUses());
-        coupon.setCurrentUses(couponEntity.getCurrentUses());
+        coupon.setMaxUsages(couponEntity.getMaxUsages());
+        coupon.setUsageCount(couponEntity.getUsageCount());
         coupon.setCountry(couponEntity.getCountry());
         return coupon;
+    }
+
+    public static void updateUsageCount(Coupon source, CouponEntity target) {
+        target.setUsageCount(source.getUsageCount());
     }
 }

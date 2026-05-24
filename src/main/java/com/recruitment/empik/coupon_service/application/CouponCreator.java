@@ -6,16 +6,14 @@ import com.recruitment.empik.coupon_service.infrastructure.persistence.SpringDat
 import com.recruitment.empik.coupon_service.infrastructure.persistence.mapping.CouponMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CouponGenerator {
+public class CouponCreator {
 
     private final int DEFAULT_COUPON_LENGTH = 8;
 
@@ -23,11 +21,11 @@ public class CouponGenerator {
 
     public Coupon createCoupon(CouponCreationRequest request) {
         String code = Optional.ofNullable(request.code())
-                .orElse(RandomStringUtils.secure().next(DEFAULT_COUPON_LENGTH));
+                .orElse(RandomStringUtils.secure().nextAlphanumeric(DEFAULT_COUPON_LENGTH));
         Coupon coupon = new Coupon();
         coupon.setCode(code.toUpperCase());
         coupon.setCreationDate(LocalDate.now());
-        coupon.setMaxUses(request.maxUses());
+        coupon.setMaxUsages(request.maxUsages());
         coupon.setCountry("Poland");
         repository.save(CouponMapper.toEntity(coupon));
         return coupon;
