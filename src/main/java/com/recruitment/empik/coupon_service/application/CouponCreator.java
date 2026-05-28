@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -23,13 +24,15 @@ public class CouponCreator {
     private final CouponRepository repository;
 
     public Coupon createCoupon(CouponCreationRequest request) {
+
         String code = Optional.ofNullable(request.code())
                 .orElse(RandomStringUtils.secure().nextAlphanumeric(DEFAULT_COUPON_LENGTH));
+
         Coupon coupon = new Coupon();
         coupon.setCode(code.toUpperCase());
         coupon.setCreationDate(LocalDate.now());
         coupon.setMaxUsages(request.maxUsages());
-        coupon.setCountry("Poland");
+        coupon.setCountry(request.country());
         try {
             repository.saveAndFlush(CouponMapper.toEntity(coupon));
         } catch (DataIntegrityViolationException exception) {
