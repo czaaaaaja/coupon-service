@@ -25,7 +25,4 @@ public class CouponMapper {
         return coupon;
     }
 
-    public static void updateUsageCount(Coupon source, CouponEntity target) {
-        target.setUsageCount(source.getUsageCount());
-    }
 }

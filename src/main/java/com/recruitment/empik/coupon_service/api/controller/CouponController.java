@@ -1,6 +1,7 @@
 package com.recruitment.empik.coupon_service.api.controller;
 
 import com.recruitment.empik.coupon_service.api.request.CouponCreationRequest;
+import com.recruitment.empik.coupon_service.api.request.CouponUsageRequest;
 import com.recruitment.empik.coupon_service.api.response.CouponErrorResponse;
 import com.recruitment.empik.coupon_service.application.CouponCreator;
 import com.recruitment.empik.coupon_service.application.CouponResolver;
@@ -10,7 +11,7 @@ import com.recruitment.empik.coupon_service.exception.CouponWriteErrorCode;
 import com.recruitment.empik.coupon_service.exception.CouponWriteException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.dialect.lock.OptimisticEntityLockException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +37,10 @@ public class CouponController {
         return couponCreator.createCoupon(request);
     }
 
-    @PatchMapping("/{code}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void useCoupon(@PathVariable String code) {
-        couponResolver.useCoupon(code);
+    @PostMapping("/{code}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Coupon useCoupon(@PathVariable String code, @RequestBody CouponUsageRequest request) {
+        return couponResolver.useCoupon(code, request);
     }
 
     //TODO move outside the controller
@@ -57,10 +58,8 @@ public class CouponController {
 
     //TODO
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-    public CouponErrorResponse handleDBException() {
-//        throw new CouponWriteException(CouponWriteErrorCode.OPTIMISTIC_LOCK);
+    public CouponErrorResponse handleOptimisticLockingException() {
         return new CouponErrorResponse(CouponWriteErrorCode.OPTIMISTIC_LOCK.getDefaultMessage(), Instant.now());
     }
-
 
 }

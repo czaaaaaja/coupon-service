@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,12 +17,4 @@ public class Coupon {
     private int maxUsages;
     private int usageCount;
     private String country;
-
-    public void use() {
-        if (maxUsages > usageCount) {
-            usageCount++;
-        } else {
-            throw new CouponWriteException(CouponWriteErrorCode.EXCEEDED_MAX_USAGES);
-        }
-    }
 }

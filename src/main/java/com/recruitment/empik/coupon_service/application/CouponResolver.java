@@ -1,5 +1,6 @@
 package com.recruitment.empik.coupon_service.application;
 
+import com.recruitment.empik.coupon_service.api.request.CouponUsageRequest;
 import com.recruitment.empik.coupon_service.domain.model.Coupon;
 import com.recruitment.empik.coupon_service.exception.CouponReadErrorCode;
 import com.recruitment.empik.coupon_service.exception.CouponReadException;
@@ -19,16 +20,13 @@ public class CouponResolver {
         return CouponMapper.toDomain(getCouponEntityByCode(code));
     }
 
+    //TODO
     @Transactional
-    public void useCoupon(String code) {
+    public Coupon useCoupon(String code, CouponUsageRequest request) {
         CouponEntity couponEntity = getCouponEntityByCode(code);
-        Coupon coupon = CouponMapper.toDomain(couponEntity);
-        try{
-            Thread.sleep(5000);
-        } catch (Exception e) {}
-        coupon.use();
-        CouponMapper.updateUsageCount(coupon, couponEntity);
+        couponEntity.addUsage(request.userId());
         repository.save(couponEntity);
+        return CouponMapper.toDomain(couponEntity);
     }
 
     private CouponEntity getCouponEntityByCode(String code) {
