@@ -11,7 +11,6 @@ import com.recruitment.empik.coupon_service.exception.CouponWriteErrorCode;
 import com.recruitment.empik.coupon_service.exception.CouponWriteException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
@@ -56,8 +55,8 @@ public class CouponController {
         return new CouponErrorResponse(couponWriteException.getMessage(), Instant.now());
     }
 
-    //TODO
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public CouponErrorResponse handleOptimisticLockingException() {
         return new CouponErrorResponse(CouponWriteErrorCode.OPTIMISTIC_LOCK.getDefaultMessage(), Instant.now());
     }

@@ -47,9 +47,6 @@ public class CouponEntity {
         if (maxUsages <= usageCount) {
             throw new CouponWriteException(CouponWriteErrorCode.EXCEEDED_MAX_USAGES);
         }
-        if (usages.stream().anyMatch(usage -> userId.equals(usage.getUserId()))) {
-            throw new CouponWriteException(CouponWriteErrorCode.CODE_USED_BY_THIS_USER);
-        }
         UsageEntity usageEntity = new UsageEntity();
         usageEntity.setCoupon(this);
         usageEntity.setUserId(userId);
