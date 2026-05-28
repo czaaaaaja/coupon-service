@@ -30,7 +30,6 @@ public class CouponEntity {
     @Column(updatable = false)
     private String code;
 
-    //TODO
     @Column(updatable = false)
     private String country;
 
@@ -43,9 +42,12 @@ public class CouponEntity {
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsageEntity> usages;
 
-    public void addUsage(String userId) {
+    public void addUsage(String userId, String country) {
         if (maxUsages <= usageCount) {
             throw new CouponWriteException(CouponWriteErrorCode.EXCEEDED_MAX_USAGES);
+        }
+        if (!country.equals(this.country)) {
+            throw new CouponWriteException(CouponWriteErrorCode.COUPON_INVALID_FOR_COUNTRY);
         }
         UsageEntity usageEntity = new UsageEntity();
         usageEntity.setCoupon(this);

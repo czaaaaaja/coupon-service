@@ -1,7 +1,7 @@
 package com.recruitment.empik.coupon_service.api.controller;
 
 import com.recruitment.empik.coupon_service.api.request.CouponCreationRequest;
-import com.recruitment.empik.coupon_service.api.request.CouponUsageRequest;
+import com.recruitment.empik.coupon_service.api.request.CouponUseRequest;
 import com.recruitment.empik.coupon_service.api.response.CouponErrorResponse;
 import com.recruitment.empik.coupon_service.application.CouponCreator;
 import com.recruitment.empik.coupon_service.application.CouponResolver;
@@ -38,8 +38,9 @@ public class CouponController {
 
     @PostMapping("/{code}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Coupon useCoupon(@PathVariable String code, @RequestBody CouponUsageRequest request) {
-        return couponResolver.useCoupon(code, request);
+    public Coupon useCoupon(@PathVariable String code,
+                            @RequestBody CouponUseRequest couponUseRequest) {
+        return couponResolver.useCoupon(code, couponUseRequest);
     }
 
     //TODO move outside the controller

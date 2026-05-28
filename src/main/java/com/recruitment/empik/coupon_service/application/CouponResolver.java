@@ -1,6 +1,6 @@
 package com.recruitment.empik.coupon_service.application;
 
-import com.recruitment.empik.coupon_service.api.request.CouponUsageRequest;
+import com.recruitment.empik.coupon_service.api.request.CouponUseRequest;
 import com.recruitment.empik.coupon_service.domain.model.Coupon;
 import com.recruitment.empik.coupon_service.exception.CouponReadErrorCode;
 import com.recruitment.empik.coupon_service.exception.CouponReadException;
@@ -10,10 +10,10 @@ import com.recruitment.empik.coupon_service.infrastructure.persistence.repositor
 import com.recruitment.empik.coupon_service.infrastructure.persistence.mapping.CouponMapper;
 import com.recruitment.empik.coupon_service.infrastructure.persistence.model.CouponEntity;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +25,15 @@ public class CouponResolver {
     }
 
     @Transactional
-    public Coupon useCoupon(String code, CouponUsageRequest request) {
+    public Coupon useCoupon(String code, CouponUseRequest request) {
+        String country = CountryResolver.getCountryFromIP(request.clientIp());
+        if (!StringUtils.hasLength(country)) {
+            throw new CouponWriteException(CouponWriteErrorCode.COUNTRY_INVALID);
+        }
+
         CouponEntity couponEntity = getCouponEntityByCode(code);
-        couponEntity.addUsage(request.userId());
+        couponEntity.addUsage(request.userId(), country);
+
         try {
             repository.saveAndFlush(couponEntity);
         } catch (DataIntegrityViolationException exception) {
